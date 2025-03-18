@@ -4,7 +4,7 @@ A discord bot that allows you to clean channels messages
 
 ## Project info
 
-- Author: [https://github.com/ameliemelo1](Amelie Guy)
+- Author: [Amelie Guy](https://github.com/ameliemelo1)
 - Version: Alpha
 
 ### Built With
