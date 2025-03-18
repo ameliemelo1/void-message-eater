@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DiscordGuild, BotConfig } from '@/types';
 import { discordService } from '@/services/discordService';
 import { toast } from '@/components/ui/use-toast';
+import { MainLogo } from '@/components/icons/MainLogo';
 
 const Index = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -25,7 +26,7 @@ const Index = () => {
       setIsLoading(true);
       const auth = discordService.isAuthenticated();
       setIsAuthenticated(auth);
-      
+
       if (auth) {
         // Fetch data if authenticated
         try {
@@ -33,7 +34,7 @@ const Index = () => {
             discordService.getGuilds(),
             discordService.getConfig()
           ]);
-          
+
           setGuilds(guildsData);
           setConfig(configData);
         } catch (error) {
@@ -44,10 +45,10 @@ const Index = () => {
           });
         }
       }
-      
+
       setIsLoading(false);
     };
-    
+
     checkAuth();
   }, []);
 
@@ -56,16 +57,16 @@ const Index = () => {
     try {
       await discordService.login();
       setIsAuthenticated(true);
-      
+
       // After login, fetch guilds and config
       const [guildsData, configData] = await Promise.all([
         discordService.getGuilds(),
         discordService.getConfig()
       ]);
-      
+
       setGuilds(guildsData);
       setConfig(configData);
-      
+
       toast({
         title: "Connected",
         description: "Successfully connected to Discord",
@@ -105,7 +106,7 @@ const Index = () => {
 
   const handleChannelChange = (channelId: string) => {
     setConfig(prev => ({ ...prev, channelId }));
-    
+
     // Save the updated config
     discordService.updateConfig({
       ...config,
@@ -115,7 +116,7 @@ const Index = () => {
 
   const handleDelayChange = (delay: number) => {
     setConfig(prev => ({ ...prev, deleteDelay: delay }));
-    
+
     // Save the updated config
     discordService.updateConfig({
       ...config,
@@ -129,12 +130,12 @@ const Index = () => {
         ...config,
         enabled
       });
-      
+
       setConfig(updatedConfig);
       toast({
         title: enabled ? "Bot Activated" : "Bot Deactivated",
-        description: enabled 
-          ? "The Void is now consuming messages" 
+        description: enabled
+          ? "The Void is now consuming messages"
           : "The Void is now dormant",
       });
     } catch (error) {
@@ -148,22 +149,20 @@ const Index = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Header 
-        isAuthenticated={isAuthenticated} 
+      <Header
+        isAuthenticated={isAuthenticated}
         onLogin={handleLogin}
         onLogout={handleLogout}
       />
-      
+
       <main className="flex-1 py-8">
         <div className="container">
           {!isAuthenticated ? (
             <div className="flex flex-col items-center justify-center h-[60vh] space-y-6">
-              <div className="h-20 w-20 rounded-full bg-void-primary flex items-center justify-center">
-                <span className="text-white font-bold text-4xl">V</span>
-              </div>
-              <h1 className="text-3xl font-bold text-center">Welcome to The Void</h1>
+              <MainLogo size={20} />
+              <h1 className="text-3xl font-bold text-center">Welcome to <span className="text-secondary">The Void</span></h1>
               <p className="text-center text-muted-foreground max-w-md">
-                A Discord bot that removes messages after a specified delay, 
+                A Discord bot that removes messages after a specified delay,
                 leaving no trace behind. Connect with Discord to get started.
               </p>
             </div>
@@ -176,41 +175,41 @@ const Index = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-6">
-                      <ChannelSelector 
+                      <ChannelSelector
                         guilds={guilds}
                         selectedGuildId={config.guildId}
                         selectedChannelId={config.channelId}
                         onGuildChange={handleGuildChange}
                         onChannelChange={handleChannelChange}
                       />
-                      
-                      <DelayConfig 
+
+                      <DelayConfig
                         delay={config.deleteDelay}
                         onDelayChange={handleDelayChange}
                       />
                     </div>
                   </CardContent>
                 </Card>
-                
-                <BotStatus 
+
+                <BotStatus
                   config={config}
                   onToggle={handleToggleBotStatus}
                 />
               </div>
-              
+
               <div className="md:col-span-8 space-y-6">
                 <MessageDemo delay={config.deleteDelay} />
-                
+
                 <Card className="border-border bg-discord-darker">
                   <CardContent className="p-6">
                     <h3 className="font-medium text-lg mb-4">About The Void</h3>
                     <div className="space-y-4 text-sm text-muted-foreground">
                       <p>
-                        <strong className="text-foreground">The Void</strong> is a Discord bot that automatically deletes messages 
+                        <strong className="text-primary">The Void</strong> is a Discord bot that automatically deletes messages
                         from specified channels after a configurable time delay.
                       </p>
                       <p>
-                        Perfect for temporary conversations, announcements with expiration dates, 
+                        Perfect for temporary conversations, announcements with expiration dates,
                         or creating an ephemeral chat experience where nothing remains permanent.
                       </p>
                       <p>
@@ -233,7 +232,7 @@ const Index = () => {
           )}
         </div>
       </main>
-      
+
       <Footer />
     </div>
   );
